@@ -13,7 +13,7 @@ ruff check src/ tests/ && ruff format --check src/ tests/
 ```
 
 ## Architecture
-- **src layout**: `src/agent_lint/` with 15 modules across 4 packages
+- **src layout**: `src/agent_lint/` with 16 modules across 4 packages
 - **Entry point**: `agent-lint = "agent_lint.cli:app"` (Typer)
 - **Models**: Pydantic v2 (`models.py`)
 - **Parsers**: Strategy pattern — `detect_format()` dispatches to format-specific parser
@@ -32,6 +32,8 @@ agent-lint lint workflow.yaml --category budget      # Filter by category
 agent-lint lint workflow.yaml --fail-under 80        # CI mode (exit 1 if below)
 agent-lint compare workflow.yaml                     # Multi-provider comparison (Pro)
 agent-lint status                                    # Show license tier
+agent-lint stats                                     # Local usage telemetry
+agent-lint stats --json                              # Telemetry as JSON
 ```
 
 ## Workflow Formats
@@ -62,12 +64,13 @@ Resolution order per step:
 | estimate | Yes | Yes |
 | lint | Yes | Yes |
 | status | Yes | Yes |
+| stats | Yes | Yes |
 | compare | No | Yes |
 | markdown_export | No | Yes |
 | custom_pricing | No | Yes |
 
 ## Testing
-- 243 tests, pytest, 95% coverage (fail_under=90)
+- 262 tests, pytest, 91% coverage (fail_under=90)
 - `tests/conftest.py` has sample workflow YAML fixtures (Gorgon, CrewAI, LangChain, Generic)
 - `tests/test_coverage_push_90.py` — targeted coverage for crewai, langchain, generic parsers + CLI branches
 - Coverage gate enforced via `addopts` in pyproject.toml (pytest-cov)
@@ -87,3 +90,11 @@ Resolution order per step:
 - Dependencies: typer, rich, pydantic, pyyaml
 - Three-name scheme: PyPI=`agentlinter`, import=`agent_lint`, CLI=`agent-lint`
 - Local directory: `/home/arete/projects/agent-audit` (pre-rename dir name)
+
+## Telemetry
+- Opt-in via `AGENT_LINT_TELEMETRY=1` env var
+- SQLite WAL store at `~/.agent-lint/telemetry.db` (override with `AGENT_LINT_DIR`)
+- `track_command(name)` — records CLI invocations (no-op when disabled)
+- `track_pro_gate(feature)` — records free-tier Pro feature attempts
+- `stats` command shows usage tables (Rich) or `--json` output
+- Module-level singleton with `reset_telemetry_store()` for test isolation

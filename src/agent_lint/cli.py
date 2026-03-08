@@ -20,6 +20,7 @@ from agent_lint.formatters import (
     format_lint_table,
 )
 from agent_lint.licensing import get_upgrade_message, has_feature
+from agent_lint.telemetry import track_command, track_pro_gate
 
 app = typer.Typer(
     name="agent-lint",
@@ -69,6 +70,7 @@ def estimate(
     fmt: str = typer.Option("table", "--format", "-f", help="Output format (table|json|markdown)."),
 ) -> None:
     """Estimate token usage and cost for a workflow."""
+    track_command("estimate")
     from agent_lint.estimator import estimate_workflow
     from agent_lint.parsers import parse_workflow
 
@@ -114,6 +116,7 @@ def lint(
     fmt: str = typer.Option("table", "--format", "-f", help="Output format (table|json|markdown)."),
 ) -> None:
     """Lint a workflow for anti-patterns and best practice violations."""
+    track_command("lint")
     from agent_lint.linter import run_lint
     from agent_lint.models import RuleCategory, Severity
     from agent_lint.parsers import parse_workflow
@@ -162,6 +165,7 @@ def lint(
 @app.command()
 def status() -> None:
     """Show license status and available features."""
+    track_command("status")
     from agent_lint.licensing import TIER_DEFINITIONS, get_license_info
 
     info = get_license_info()
@@ -194,11 +198,13 @@ def compare(
     json: bool = typer.Option(False, "--json", help="Output as JSON."),
 ) -> None:
     """Compare workflow costs across providers (Pro feature)."""
+    track_command("compare")
     from agent_lint.comparator import compare_providers
     from agent_lint.parsers import parse_workflow
 
     # Gate check.
     if not has_feature("compare"):
+        track_pro_gate("compare")
         console.print(f"[yellow]{get_upgrade_message('compare')}[/yellow]")
         raise typer.Exit(1)
 
@@ -213,3 +219,86 @@ def compare(
         format_compare_json(result, console)
     else:
         format_compare_table(result, console)
+
+
+# ---------------------------------------------------------------------------
+# stats
+# ---------------------------------------------------------------------------
+
+
+@app.command()
+def stats(
+    json: bool = typer.Option(False, "--json", help="Output as JSON."),
+) -> None:
+    """Show local usage telemetry (requires AGENT_LINT_TELEMETRY=1)."""
+    from agent_lint.telemetry import TelemetryStore, _telemetry_dir, is_enabled
+
+    if not is_enabled():
+        console.print(
+            "[dim]Telemetry is disabled. "
+            "Set AGENT_LINT_TELEMETRY=1 to enable local usage tracking.[/dim]"
+        )
+        return
+
+    db_file = _telemetry_dir() / "telemetry.db"
+    if not db_file.exists():
+        console.print("[dim]No telemetry data yet.[/dim]")
+        return
+
+    from rich.table import Table
+
+    ts = TelemetryStore(db_file)
+    try:
+        commands = ts.get_command_counts()
+        pro_gates = ts.get_pro_gate_counts()
+        total = ts.get_total_events()
+        first = ts.get_first_event_time()
+        last = ts.get_last_event_time()
+        activity = ts.get_daily_activity()
+
+        if json:
+            import json as json_mod
+
+            data = {
+                "total_events": total,
+                "first_event": first,
+                "last_event": last,
+                "commands": commands,
+                "pro_gate_hits": pro_gates,
+                "daily_activity": [{"date": d, "count": c} for d, c in activity],
+            }
+            console.print(json_mod.dumps(data, indent=2))
+        else:
+            overview = Table(title="Telemetry Overview")
+            overview.add_column("Metric", style="cyan")
+            overview.add_column("Value", style="green")
+            overview.add_row("Total Events", str(total))
+            overview.add_row("First Event", first or "n/a")
+            overview.add_row("Last Event", last or "n/a")
+            console.print(overview)
+
+            if commands:
+                cmd_table = Table(title="Command Usage")
+                cmd_table.add_column("Command", style="cyan")
+                cmd_table.add_column("Count", style="green", justify="right")
+                for name, count in commands.items():
+                    cmd_table.add_row(name, str(count))
+                console.print(cmd_table)
+
+            if pro_gates:
+                gate_table = Table(title="Pro Feature Gate Hits")
+                gate_table.add_column("Feature", style="cyan")
+                gate_table.add_column("Attempts", style="yellow", justify="right")
+                for name, count in pro_gates.items():
+                    gate_table.add_row(name, str(count))
+                console.print(gate_table)
+
+            if activity:
+                act_table = Table(title="Daily Activity (Last 7 Days)")
+                act_table.add_column("Date", style="cyan")
+                act_table.add_column("Events", style="green", justify="right")
+                for day, count in activity:
+                    act_table.add_row(day, str(count))
+                console.print(act_table)
+    finally:
+        ts.close()
