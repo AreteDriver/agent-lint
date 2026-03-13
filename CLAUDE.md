@@ -5,11 +5,36 @@ CLI tool that analyzes agent workflow YAML configs for cost estimation, anti-pat
 
 ## Quick Start
 ```bash
-cd /home/arete/projects/agent-lint
+cd /home/arete/projects/agent-audit
 source .venv/bin/activate
 pip install -e ".[dev]"
-pytest tests/ -v
-ruff check src/ tests/ && ruff format --check src/ tests/
+```
+
+## Common Commands
+```bash
+# Testing
+pytest                                    # Run all 281 tests (coverage gate: 90%)
+pytest tests/test_cli.py -v               # Single module
+pytest -k "test_estimate" -v              # Filter by name
+
+# Linting & Formatting
+ruff check src/ tests/                    # Lint
+ruff format src/ tests/                   # Format
+ruff check src/ tests/ && ruff format src/ tests/  # Both (always run both)
+
+# Type Checking
+mypy src/                                 # Strict mode enabled
+
+# Build & Install
+pip install -e ".[dev]"                   # Editable install with dev deps
+pip install -e ".[dev,server]"            # Include httpx for license server
+
+# CLI Usage
+agent-lint estimate workflow.yaml         # Cost estimate
+agent-lint lint workflow.yaml             # Lint for anti-patterns
+agent-lint compare workflow.yaml          # Multi-provider comparison (Pro)
+agent-lint status                         # License tier
+agent-lint stats                          # Usage telemetry
 ```
 
 ## Architecture
@@ -21,11 +46,11 @@ ruff check src/ tests/ && ruff format --check src/ tests/
 - **Linter**: `@lint_rule` decorator registry, 17 rules across 4 categories
 - **Licensing**: HMAC-checksum keys, prefix `ALNT`, salt `agent-lint-v1`
 
-## Key Commands
+## CLI Reference
 ```bash
 agent-lint estimate workflow.yaml                    # Cost estimate (table)
 agent-lint estimate workflow.yaml --json             # JSON output
-agent-lint estimate workflow.yaml --format markdown  # Markdown output
+agent-lint estimate workflow.yaml --format markdown  # Markdown output (Pro)
 agent-lint estimate workflow.yaml --provider ollama  # Override provider
 agent-lint lint workflow.yaml                        # Lint for anti-patterns
 agent-lint lint workflow.yaml --category budget      # Filter by category
@@ -70,7 +95,7 @@ Resolution order per step:
 | custom_pricing | No | Yes |
 
 ## Testing
-- 262 tests, pytest, 91% coverage (fail_under=90)
+- 296 tests, pytest, 98% coverage (fail_under=90)
 - `tests/conftest.py` has sample workflow YAML fixtures (Gorgon, CrewAI, LangChain, Generic)
 - `tests/test_coverage_push_90.py` — targeted coverage for crewai, langchain, generic parsers + CLI branches
 - Coverage gate enforced via `addopts` in pyproject.toml (pytest-cov)
@@ -84,12 +109,25 @@ Resolution order per step:
 - **Gitleaks allowlist**: `.gitleaks.toml` — `agent-lint-v1` salt + `tests/` path
 - **PyPI**: OIDC Trusted Publisher, `environment: pypi`
 
-## Conventions
-- Python 3.11+, `from __future__ import annotations` everywhere
-- Ruff lint + format (B008 suppressed for cli.py — Typer pattern)
-- Dependencies: typer, rich, pydantic, pyyaml
+## Coding Standards
+- Python 3.11+, `from __future__ import annotations` in every file
+- Type hints on all public functions (mypy strict mode enforced)
+- Pydantic v2 for models — use `model_validator`, not legacy validators
+- `@lint_rule` decorator for new rules — auto-registered, no manual wiring
+- Strategy pattern for parsers — new formats implement parser interface + `detect_format()` clause
+- Ruff lint + format (B008 suppressed for cli.py — Typer `Option()` pattern)
+- Dependencies: typer, rich, pydantic, pyyaml (httpx optional for server validation)
 - Three-name scheme: PyPI=`agentlinter`, import=`agent_lint`, CLI=`agent-lint`
-- Local directory: `/home/arete/projects/agent-audit` (pre-rename dir name)
+- Local directory: `/home/arete/projects/agent-audit`
+
+## Git Conventions
+- Conventional commits: `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`
+- Run `ruff check src/ tests/ && ruff format src/ tests/` before committing
+- Run `pytest` before pushing (coverage gate: 90%)
+- Release: push `v*` tag → CI runs tests → builds → GitHub Release → PyPI OIDC publish
+
+## Domain Context
+agent-lint targets AI/ML engineers building multi-agent workflows. The core value prop is catching cost and reliability issues *before* running expensive agent pipelines. Supported frameworks (Gorgon/Forge, CrewAI, LangChain/LangGraph) each have different YAML schemas — the parser strategy pattern normalizes them into a common `WorkflowModel`. Pricing data is bundled as YAML in `src/agent_lint/data/` and covers Anthropic, OpenAI, and Ollama (local/free) providers.
 
 ## Telemetry
 - Opt-in via `AGENT_LINT_TELEMETRY=1` env var
