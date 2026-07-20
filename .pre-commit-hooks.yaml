@@ -1,0 +1,12 @@
+# ---------------------------------------------------------------------------
+# Pre-commit hook definition for consumers who want to lint agent workflows.
+# ---------------------------------------------------------------------------
+- id: agent-lint
+  name: agent-lint
+  description: "Lint agent workflow YAML configs for cost and anti-patterns"
+  entry: agent-lint lint
+  language: python
+  files: \.(yaml|yml)$
+  pass_filenames: true
+  require_serial: false
+  additional_dependencies: []
