@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Literal
+
 from agent_lint.config import (
     INPUT_OUTPUT_RATIO,
     ROLE_TOKEN_DEFAULTS,
@@ -17,7 +19,7 @@ from agent_lint.models import (
 from agent_lint.pricing import calculate_cost, get_model_pricing, load_providers
 
 
-def _resolve_tokens(step: ParsedStep) -> tuple[int, str]:
+def _resolve_tokens(step: ParsedStep) -> tuple[int, Literal["declared", "archetype", "default"]]:
     """Resolve token estimate for a step. Returns (tokens, source)."""
     # 1. Declared in YAML.
     if step.estimated_tokens is not None:
@@ -54,7 +56,7 @@ def estimate_step(
         nested_total = sum(_resolve_tokens(ns)[0] for ns in step.nested_steps)
         if nested_total > total_tokens:
             total_tokens = nested_total
-            source = "declared" if step.estimated_tokens else "archetype"
+            source = "declared" if step.estimated_tokens is not None else "archetype"
 
     input_tokens, output_tokens = _split_tokens(total_tokens)
 

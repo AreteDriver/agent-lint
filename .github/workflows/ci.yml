@@ -18,6 +18,18 @@ jobs:
       - run: ruff check src/ tests/
       - run: ruff format --check src/ tests/
 
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]"
+      # Ratchet: src/ is fully typed under strict mode.
+      # tests/ will be added once helper annotations are completed.
+      - run: mypy src/
+
   test:
     runs-on: ubuntu-latest
     strategy:
