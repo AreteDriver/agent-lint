@@ -51,8 +51,11 @@ def _read_toml_section(path: Path, section: str) -> dict[str, Any] | None:
     try:
         with path.open("rb") as fh:
             data = tomllib.load(fh)
-    except OSError:
+    except (OSError, tomllib.TOMLDecodeError):
         return None
+
+    if not section:
+        return data if isinstance(data, dict) else None
 
     keys = section.split(".")
     current: Any = data
