@@ -1,0 +1,67 @@
+# ---------------------------------------------------------------------------
+# Sample agent workflow for SARIF upload testing.
+# Contains intentional anti-patterns to exercise lint rules.
+# ---------------------------------------------------------------------------
+name: "SARIF Test Workflow"
+description: "Intentionally flawed workflow for testing agent-lint SARIF output"
+version: "1.0"
+metadata:
+  author: "agent-lint-test"
+  tags: ["test", "sarif"]
+
+token_budget: 50000
+timeout_seconds: 1800
+
+inputs:
+  feature_request:
+    description: "Feature to build"
+    required: true
+    # Missing type constraint → triggers S003
+
+steps:
+  - id: plan
+    type: claude_code
+    role: planner
+    estimated_tokens: 5000
+    on_failure: abort
+    # No fallback → triggers R002
+    prompt: |
+      Plan implementation for: ${{ inputs.feature_request }}
+    outputs: [plan]
+
+  - id: build
+    type: claude_code
+    role: builder
+    estimated_tokens: 20000
+    on_failure: retry
+    max_retries: 2
+    prompt: |
+      Build the feature based on: ${{ plan.outputs.plan }}
+    outputs: [code]
+
+  - id: deploy
+    type: shell
+    command: "cd /var/app && ./deploy.sh ${{ inputs.feature_request }}"
+    # Hardcoded path + variable interpolation → triggers S001, S002
+    timeout_seconds: 300
+
+  - id: review
+    type: claude_code
+    role: reviewer
+    estimated_tokens: 5000
+    on_failure: skip
+    condition: "code != ''"
+    prompt: |
+      Review the code quality.
+    outputs: [review]
+
+  - id: cleanup
+    type: shell
+    command: "rm -rf /tmp/build/*"
+    # No timeout → triggers R004
+    # Hardcoded path → triggers S002
+
+outputs:
+  - plan
+  - code
+  - review
