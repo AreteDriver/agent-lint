@@ -156,7 +156,7 @@ def lint(
     elif fmt == "markdown":
         format_lint_markdown(report, console)
     elif fmt == "sarif":
-        console.print(format_sarif(report))
+        console.print(format_sarif(report), markup=False, highlight=False)
     else:
         format_lint_table(report, console)
 
