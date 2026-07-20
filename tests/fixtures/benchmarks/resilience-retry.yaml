@@ -1,0 +1,7 @@
+name: resilience-retry
+version: "1.0"
+steps:
+  - id: fetch
+    type: shell
+    command: "curl https://example.com"
+    on_failure: retry

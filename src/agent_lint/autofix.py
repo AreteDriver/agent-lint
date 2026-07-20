@@ -54,24 +54,25 @@ def apply_autofixes(raw: dict[str, Any], findings: list[LintFinding]) -> dict[st
 
 def _find_step_by_id(raw: dict[str, Any], step_id: str) -> dict[str, Any] | None:
     """Locate a step dict by its 'id' within the raw YAML, searching recursively."""
-    steps = raw.get("steps")
-    if not isinstance(steps, list):
+
+    def _search(node: Any) -> dict[str, Any] | None:
+        if isinstance(node, dict):
+            if node.get("id") == step_id:
+                return node
+            for value in node.values():
+                if isinstance(value, (dict, list)):
+                    result = _search(value)
+                    if result is not None:
+                        return result
+        elif isinstance(node, list):
+            for item in node:
+                if isinstance(item, (dict, list)):
+                    result = _search(item)
+                    if result is not None:
+                        return result
         return None
 
-    def search(step_list: list[Any]) -> dict[str, Any] | None:
-        for step in step_list:
-            if isinstance(step, dict):
-                if step.get("id") == step_id:
-                    return step
-                for key in ("steps", "nested_steps"):
-                    nested = step.get(key)
-                    if isinstance(nested, list):
-                        found = search(nested)
-                        if found is not None:
-                            return found
-        return None
-
-    return search(steps)
+    return _search(raw.get("steps", []))
 
 
 # ---------------------------------------------------------------------------
@@ -82,9 +83,8 @@ def _find_step_by_id(raw: dict[str, Any], step_id: str) -> dict[str, Any] | None
 @autofix("B001")
 def fix_b001_add_token_budget(raw: dict[str, Any], _finding: LintFinding) -> dict[str, Any]:
     """Add a default token_budget at workflow level."""
-    if raw.get("token_budget") is None:
+    if "token_budget" not in raw:
         raw["token_budget"] = 50000
-    return raw
     return raw
 
 
