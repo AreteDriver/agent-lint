@@ -39,14 +39,13 @@ def fetch_files(query: str, limit: int = 20) -> list[dict]:
     try:
         resp = requests.get(url, headers=headers, params=params, timeout=30)
         resp.raise_for_status()
+        data = resp.json()
+        items = data.get("items", [])
+        print(f"  '{query}' \u2192 {len(items)} files")
+        return items
     except Exception as exc:
         print(f"Search failed for '{query}': {exc}")
         return []
-
-    data = resp.json()
-    items = data.get("items", [])
-    print(f"  '{query}' → {len(items)} files")
-    return items
 
 
 def download_raw(url: str) -> str | None:
