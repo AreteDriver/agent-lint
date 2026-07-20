@@ -120,7 +120,13 @@ def _resolve_artifact_uri(workflow_name: str) -> str:
     Otherwise, assume it's a basename and prefix with ./workflows/.
     """
     if "/" in workflow_name or "\\" in workflow_name:
-        return workflow_name
+        path = Path(workflow_name)
+        try:
+            if path.is_absolute():
+                path = path.relative_to(Path.cwd())
+        except ValueError:
+            pass
+        return path.as_posix()
     return f"./workflows/{workflow_name}"
 
 
