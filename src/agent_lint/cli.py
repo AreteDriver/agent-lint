@@ -156,7 +156,8 @@ def lint(
     elif fmt == "markdown":
         format_lint_markdown(report, console)
     elif fmt == "sarif":
-        console.print(format_sarif(report), markup=False, highlight=False)
+        # Use plain print() to avoid Rich soft-wrapping long lines.
+        print(format_sarif(report))
     else:
         format_lint_table(report, console)
 
