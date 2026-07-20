@@ -20,6 +20,7 @@ from agent_lint.formatters import (
     format_lint_table,
 )
 from agent_lint.licensing import get_upgrade_message, has_feature
+from agent_lint.sarif_formatter import format_sarif
 from agent_lint.telemetry import track_command, track_pro_gate
 
 app = typer.Typer(
@@ -113,7 +114,12 @@ def lint(
         None, "--fail-under", help="Exit 1 if score is below this threshold."
     ),
     json: bool = typer.Option(False, "--json", help="Output as JSON."),
-    fmt: str = typer.Option("table", "--format", "-f", help="Output format (table|json|markdown)."),
+    fmt: str = typer.Option(
+        "table",
+        "--format",
+        "-f",
+        help="Output format (table|json|markdown|sarif).",
+    ),
 ) -> None:
     """Lint a workflow for anti-patterns and best practice violations."""
     track_command("lint")
@@ -149,6 +155,8 @@ def lint(
         format_lint_json(report, console)
     elif fmt == "markdown":
         format_lint_markdown(report, console)
+    elif fmt == "sarif":
+        console.print(format_sarif(report))
     else:
         format_lint_table(report, console)
 
