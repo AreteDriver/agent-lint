@@ -1,0 +1,66 @@
+name: Bug Report
+description: Report a bug in agent-lint
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please fill in the details below so we can reproduce and fix it.
+  - type: input
+    id: version
+    attributes:
+      label: agent-lint Version
+      description: What version of agent-lint are you running?
+      placeholder: e.g., 0.2.1
+    validations:
+      required: true
+  - type: input
+    id: python
+    attributes:
+      label: Python Version
+      description: What Python version are you using?
+      placeholder: e.g., 3.12.3
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options:
+        - macOS
+        - Linux
+        - Windows
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the bug in clear steps.
+      placeholder: |
+        1. Ran `agent-lint lint workflow.yaml`
+        2. Expected to see a score of 85
+        3. Got a crash with `PricingError: Unknown provider`
+    validations:
+      required: true
+  - type: textarea
+    id: workflow
+    attributes:
+      label: Workflow YAML (if applicable)
+      description: Paste the minimal YAML that triggers the bug.
+      render: yaml
+  - type: textarea
+    id: logs
+    attributes:
+      label: Output / Logs
+      description: Paste the full error output or traceback.
+      render: shell
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true

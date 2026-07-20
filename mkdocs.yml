@@ -1,0 +1,67 @@
+site_name: agent-lint
+site_description: "CLI tool for cost estimation and anti-pattern detection in agent workflow YAML configs"
+site_url: https://aretedriver.github.io/agent-lint/
+repo_url: https://github.com/AreteDriver/agent-lint
+repo_name: AreteDriver/agent-lint
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.copy
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            docstring_style: google
+            show_source: true
+            show_root_heading: true
+            show_category_heading: true
+
+nav:
+  - Home: index.md
+  - User Guide:
+      - Installation: install.md
+      - Quick Start: quickstart.md
+      - Configuration: config.md
+      - CI Integration: ci.md
+  - Rules Reference:
+      - Budget: rules/budget.md
+      - Resilience: rules/resilience.md
+      - Efficiency: rules/efficiency.md
+      - Security: rules/security.md
+  - API Reference:
+      - Models: api/models.md
+      - Parsers: api/parsers.md
+      - Rules: api/rules.md
+      - Formatters: api/formatters.md
+  - Contributing: contributing.md
+  - Changelog: changelog.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/AreteDriver/agent-lint
