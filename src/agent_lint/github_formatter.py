@@ -7,7 +7,7 @@ Usage in GitHub Actions:
   agent-lint lint workflows/ --format github
 
 This outputs lines like:
-  ::error file=workflows/deploy.yaml,line=15,title=B001::No token_budget declared
+  ::error file=workflows/deploy.yaml,title=B001::No token_budget declared
 
 GitHub Actions picks these up automatically and surfaces them as PR annotations.
 """
