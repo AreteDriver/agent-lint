@@ -1,0 +1,32 @@
+# ---------------------------------------------------------------------------
+# Example project-level configuration for agent-lint.
+# Place this file in your project root as .agent-lint.toml
+# or add [tool.agent-lint] to pyproject.toml instead.
+# ---------------------------------------------------------------------------
+
+[agent-lint]
+# Minimum score before CI exits with failure.
+fail-under = 80
+
+# Output format: table | json | markdown | sarif
+format = "table"
+
+# Rules to suppress globally (equivalent to # agent-lint: ignore=RULE_ID)
+exclude-rules = ["B004", "E003"]
+
+# Override default severities per rule.
+[agent-lint.custom-severities]
+S001 = "warning"   # Demote shell variable interpolation from ERROR to WARNING.
+R003 = "warning"   # Demote retry-without-max from INFO to WARNING.
+
+# Paths to lint recursively.
+include-paths = ["workflows/", "agents/"]
+
+# Paths to ignore.
+exclude-paths = ["workflows/templates/", "agents/examples/"]
+
+# Default category filter (optional).
+# category = "security"
+
+# Default severity filter (optional).
+# severity = "error"
