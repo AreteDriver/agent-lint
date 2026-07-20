@@ -30,7 +30,7 @@ def _find_pyproject_toml(start: Path | None = None) -> Path | None:
 
 def _find_agent_lint_toml(start: Path | None = None) -> Path | None:
     """Walk upward from start (or cwd) looking for .agent-lint.toml."""
-    cwd = start or Path.cwd()
+    cwd = (start or Path.cwd()).resolve()
     for parent in [cwd, *cwd.parents]:
         candidate = parent / ".agent-lint.toml"
         if candidate.exists():
