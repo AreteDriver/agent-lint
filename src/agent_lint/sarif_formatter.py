@@ -74,12 +74,13 @@ def _build_results(report: LintReport) -> list[dict[str, Any]]:
     for finding in report.findings:
         result: dict[str, Any] = {
             "ruleId": finding.rule_id,
-            "ruleIndex": rule_index.get(finding.rule_id, -1),
             "level": _severity_to_sarif_level(finding.severity),
             "message": {
                 "text": finding.message,
             },
         }
+        if finding.rule_id in rule_index:
+            result["ruleIndex"] = rule_index[finding.rule_id]
 
         # Include suggestion as a related location if present.
         if finding.suggestion:
