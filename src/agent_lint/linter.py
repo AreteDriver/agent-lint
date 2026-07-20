@@ -2,11 +2,6 @@
 
 from __future__ import annotations
 
-# Ensure rules are registered by importing the modules.
-import agent_lint.rules.budget  # noqa: F401
-import agent_lint.rules.efficiency  # noqa: F401
-import agent_lint.rules.resilience  # noqa: F401
-import agent_lint.rules.security  # noqa: F401
 from agent_lint.config import SEVERITY_DEDUCTIONS
 from agent_lint.models import (
     LintFinding,
