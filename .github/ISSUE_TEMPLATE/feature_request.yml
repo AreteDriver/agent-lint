@@ -1,0 +1,41 @@
+name: Feature Request
+description: Suggest a new feature or enhancement for agent-lint
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature. Please describe the use case and proposed solution.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this feature solve?
+      placeholder: |
+        Currently, agent-lint only supports Gorgon, CrewAI, and LangChain workflows.
+        I need support for OpenAI Swarm YAML configs.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: How should this feature work?
+      placeholder: |
+        Add a new `WorkflowFormat.SWARM` and `parsers/swarm.py` that detects
+        OpenAI Swarm configs by the presence of `agents` and `handoffs` keys.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: What other approaches have you tried?
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
