@@ -1,0 +1,4 @@
+{
+  "expected_findings": ["R003"],
+  "notes": "Retry without max_retries."
+}
