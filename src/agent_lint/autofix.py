@@ -53,12 +53,26 @@ def apply_autofixes(raw: dict[str, Any], findings: list[LintFinding]) -> dict[st
 
 
 def _find_step_by_id(raw: dict[str, Any], step_id: str) -> dict[str, Any] | None:
-    """Locate a step dict by its 'id' within the raw YAML."""
-    steps = raw.get("steps", [])
-    for step in steps:
-        if isinstance(step, dict) and step.get("id") == step_id:
-            return step
-    return None
+    """Locate a step dict by its 'id' within the raw YAML, searching recursively."""
+
+    def _search(node: Any) -> dict[str, Any] | None:
+        if isinstance(node, dict):
+            if node.get("id") == step_id:
+                return node
+            for value in node.values():
+                if isinstance(value, (dict, list)):
+                    result = _search(value)
+                    if result is not None:
+                        return result
+        elif isinstance(node, list):
+            for item in node:
+                if isinstance(item, (dict, list)):
+                    result = _search(item)
+                    if result is not None:
+                        return result
+        return None
+
+    return _search(raw.get("steps", []))
 
 
 # ---------------------------------------------------------------------------
