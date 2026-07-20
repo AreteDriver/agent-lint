@@ -163,11 +163,13 @@ def _read_cache() -> dict[str, Any] | None:
     try:
         if not _CACHE_FILE.is_file():
             return None
-        data = json.loads(_CACHE_FILE.read_text())
-        cached_at = data.get("cached_at", 0)
+        raw_data = json.loads(_CACHE_FILE.read_text())
+        if not isinstance(raw_data, dict):
+            return None
+        cached_at = raw_data.get("cached_at", 0)
         if time.time() - cached_at > _CACHE_TTL_SECONDS:
             return None
-        return data
+        return raw_data
     except (OSError, json.JSONDecodeError, TypeError):
         return None
 
@@ -203,7 +205,9 @@ def _validate_server(key: str) -> dict[str, Any] | None:
             timeout=5.0,
         )
         if resp.status_code == 200:
-            return resp.json()
+            result = resp.json()
+            if isinstance(result, dict):
+                return result
     except Exception:
         logger.debug("License server unreachable, falling back to local validation")
 

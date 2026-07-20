@@ -26,7 +26,7 @@ def check_parallelizable(workflow: ParsedWorkflow) -> list[LintFinding]:
             continue
 
         # Check if next step references current step's outputs in raw_params.
-        current_outputs = set()
+        current_outputs: set[str] = set()
         for key in ("outputs",):
             vals = current.raw_params.get(key, [])
             if isinstance(vals, list):
