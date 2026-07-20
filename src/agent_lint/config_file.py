@@ -20,7 +20,7 @@ from agent_lint.models import Severity
 
 def _find_pyproject_toml(start: Path | None = None) -> Path | None:
     """Walk upward from start (or cwd) looking for pyproject.toml."""
-    cwd = start or Path.cwd()
+    cwd = (start or Path.cwd()).resolve()
     for parent in [cwd, *cwd.parents]:
         candidate = parent / "pyproject.toml"
         if candidate.exists():
