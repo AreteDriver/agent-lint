@@ -97,8 +97,7 @@ def main() -> int:
     for query in QUERIES:
         items = fetch_files(query, limit=10)
         for item in items:
-            raw_url = item["html_url"].replace(
-                "github.com", "raw.githubusercontent.com").replace("/blob/", "/")
+            raw_url = item["url"]
             text = download_raw(raw_url)
             if text is None:
                 continue
