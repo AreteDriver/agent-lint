@@ -132,8 +132,8 @@ def check_long_timeout(workflow: ParsedWorkflow) -> list[LintFinding]:
 | S | Security | S001–S099 |
 
 Every new rule needs:
-1. A rule function in the appropriate `rules/*.py` file
-2. At least one test in `tests/test_rules.py`
+1. A rule function in the appropriate src/agent_lint/rules/*.py file
+2. At least one test in tests/test_rules.py
 3. A mention in the README rules table (if applicable)
 
 ## Adding a New Workflow Parser
