@@ -1,0 +1,61 @@
+# ---------------------------------------------------------------------------
+# Composite GitHub Action: agent-lint
+# Usage in downstream workflows:
+#
+#   steps:
+#     - uses: AreteDriver/agent-lint/.github/actions/agent-lint@main
+#       with:
+#         path: workflows/
+#         fail-under: 80
+#         format: github
+# ---------------------------------------------------------------------------
+name: 'agent-lint'
+description: 'Lint agent workflow YAML configs for cost and anti-patterns'
+author: 'AreteDriver'
+
+inputs:
+  path:
+    description: 'Path to workflow YAML file or directory'
+    required: true
+    default: '.'
+  fail-under:
+    description: 'Minimum lint score (0-100)'
+    required: false
+    default: '80'
+  format:
+    description: 'Output format (table|json|markdown|github)'
+    required: false
+    default: 'github'
+  category:
+    description: 'Filter by category (budget|resilience|efficiency|security)'
+    required: false
+    default: ''
+  severity:
+    description: 'Filter by severity (error|warning|info)'
+    required: false
+    default: ''
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install agent-lint
+      shell: bash
+      run: pip install agentlinter
+
+    - name: Run agent-lint
+      shell: bash
+      run: |
+        ARGS=("${{ inputs.path }}")
+        [ -n "${{ inputs.fail-under }}" ] && ARGS+=(--fail-under "${{ inputs.fail-under }}")
+        [ -n "${{ inputs.category }}" ] && ARGS+=(--category "${{ inputs.category }}")
+        [ -n "${{ inputs.severity }}" ] && ARGS+=(--severity "${{ inputs.severity }}")
+        agent-lint lint "${ARGS[@]}" --format "${{ inputs.format }}"
+
+branding:
+  icon: 'shield'
+  color: 'blue'
