@@ -140,11 +140,11 @@ Every new rule needs:
 
 To support a new workflow format:
 
-1. Add a `WorkflowFormat` enum value in `models.py`
-2. Add detection logic in `parsers/__init__.py:detect_format()`
-3. Implement `parsers/{format_name}.py:parse_{format_name}()`
-4. Register it in `parsers/__init__.py:parse_workflow()`
-5. Add integration tests with a real fixture in `tests/fixtures/workflows/`
+1. Add a WorkflowFormat enum value in src/agent_lint/models.py
+2. Add detection logic in src/agent_lint/parsers/__init__.py:detect_format()
+3. Implement src/agent_lint/parsers/{format_name}.py:parse_{format_name}()
+4. Register it in src/agent_lint/parsers/__init__.py:parse_workflow()
+5. Add integration tests with a real fixture in tests/fixtures/workflows/
 
 ## Code Style
 
