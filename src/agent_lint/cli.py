@@ -8,6 +8,7 @@ import typer
 from rich.console import Console
 
 from agent_lint import __version__
+from agent_lint.autofix import apply_autofixes, generate_patch, get_fixable_findings
 from agent_lint.exceptions import AgentAuditError
 from agent_lint.formatters import (
     format_compare_json,
@@ -19,7 +20,6 @@ from agent_lint.formatters import (
     format_lint_markdown,
     format_lint_table,
 )
-from agent_lint.github_formatter import format_github_annotations
 from agent_lint.licensing import get_upgrade_message, has_feature
 from agent_lint.telemetry import track_command, track_pro_gate
 
@@ -114,15 +114,14 @@ def lint(
         None, "--fail-under", help="Exit 1 if score is below this threshold."
     ),
     json: bool = typer.Option(False, "--json", help="Output as JSON."),
-    fmt: str = typer.Option(
-        "table", "--format", "-f", help="Output format (table|json|markdown|github)."
-    ),
+    fmt: str = typer.Option("table", "--format", "-f", help="Output format (table|json|markdown)."),
+    fix: bool = typer.Option(False, "--fix", help="Suggest autofixes as a diff patch."),
 ) -> None:
     """Lint a workflow for anti-patterns and best practice violations."""
     track_command("lint")
     from agent_lint.linter import run_lint
     from agent_lint.models import RuleCategory, Severity
-    from agent_lint.parsers import parse_workflow
+    from agent_lint.parsers import load_yaml, parse_workflow
 
     try:
         wf = parse_workflow(workflow_file)
@@ -148,14 +147,34 @@ def lint(
 
     report = run_lint(wf, category=cat, severity=sev)
 
-    if json or fmt == "json":
-        format_lint_json(report, console)
-    elif fmt == "markdown":
-        format_lint_markdown(report, console)
-    elif fmt == "github":
-        print(format_github_annotations(report))
+    if fix and report.findings:
+        fixable = get_fixable_findings(report.findings)
+        if fixable:
+            console.print(f"\n[bold]{len(fixable)} fixable finding(s):[/bold]")
+            for f in fixable:
+                console.print(f"  [dim]{f.rule_id}[/dim]: {f.message}")
+            try:
+                raw = load_yaml(workflow_file)
+                fixed = apply_autofixes(raw, fixable)
+                patch = generate_patch(raw, fixed)
+                if patch:
+                    console.print("\n[bold]Proposed patch:[/bold]")
+                    console.print(patch)
+                else:
+                    console.print(
+                        "\n[yellow]No patch generated (fixes did not change structure).[/yellow]"
+                    )
+            except Exception as exc:
+                console.print(f"\n[yellow]Could not generate patch: {exc}[/yellow]")
+        else:
+            console.print("\n[dim]No autofixes available for current findings.[/dim]")
     else:
-        format_lint_table(report, console)
+        if json or fmt == "json":
+            format_lint_json(report, console)
+        elif fmt == "markdown":
+            format_lint_markdown(report, console)
+        else:
+            format_lint_table(report, console)
 
     if fail_under is not None and report.score < fail_under:
         console.print(f"[red]Score {report.score} is below threshold {fail_under}.[/red]")

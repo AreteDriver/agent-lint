@@ -38,12 +38,13 @@ class TestFormatGithubAnnotations:
             )
         ]
         report = _make_report(findings)
-        output = format_github_annotations(report, filepath="workflows/deploy.yaml")
+        output = format_github_annotations(report)
         lines = output.split("\n")
 
         assert lines[0].startswith("::error file=workflows/deploy.yaml,title=S001::")
         assert "Shell injection risk" in lines[0]
         assert "Validate inputs" in lines[0]
+
     def test_warning_annotation(self) -> None:
         findings = [
             LintFinding(

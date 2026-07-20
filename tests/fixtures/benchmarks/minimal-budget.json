@@ -1,0 +1,4 @@
+{
+  "expected_findings": ["B001"],
+  "notes": "Missing token_budget at workflow level."
+}
