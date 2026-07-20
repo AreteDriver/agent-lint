@@ -49,11 +49,11 @@ def fetch_files(query: str, limit: int = 20) -> list[dict]:
 
 
 def download_raw(url: str) -> str | None:
-    """Download raw file content from GitHub."""
+    """Download raw file content from GitHub API."""
     import requests
 
     token = os.environ.get("GITHUB_TOKEN", "")
-    headers = {"Accept": "application/vnd.github.raw+json"}
+    headers = {"Accept": "application/vnd.github.v3.raw"}
     if token:
         headers["Authorization"] = f"Bearer {token}"
 
