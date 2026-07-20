@@ -82,8 +82,9 @@ def _find_step_by_id(raw: dict[str, Any], step_id: str) -> dict[str, Any] | None
 @autofix("B001")
 def fix_b001_add_token_budget(raw: dict[str, Any], _finding: LintFinding) -> dict[str, Any]:
     """Add a default token_budget at workflow level."""
-    if "token_budget" not in raw:
+    if raw.get("token_budget") is None:
         raw["token_budget"] = 50000
+    return raw
     return raw
 
 
