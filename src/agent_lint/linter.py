@@ -4,7 +4,9 @@ from __future__ import annotations
 
 # Ensure rules are registered by importing the modules.
 import agent_lint.rules.budget  # noqa: F401
+import agent_lint.rules.efficiency  # noqa: F401
 import agent_lint.rules.resilience  # noqa: F401
+import agent_lint.rules.security  # noqa: F401
 from agent_lint.config import SEVERITY_DEDUCTIONS
 from agent_lint.models import (
     LintFinding,
@@ -16,16 +18,6 @@ from agent_lint.models import (
 from agent_lint.rules import get_all_rules, get_rules_by_category
 
 
-def _import_all_rules() -> None:
-    """Import all rule modules to trigger registration."""
-    import contextlib
-
-    with contextlib.suppress(ImportError):
-        import agent_lint.rules.efficiency  # noqa: F401
-    with contextlib.suppress(ImportError):
-        import agent_lint.rules.security  # noqa: F401
-
-
 def run_lint(
     workflow: ParsedWorkflow,
     *,
@@ -33,7 +25,6 @@ def run_lint(
     severity: Severity | None = None,
 ) -> LintReport:
     """Run all lint rules against a parsed workflow."""
-    _import_all_rules()
 
     rules = get_rules_by_category(category) if category is not None else get_all_rules()
 
