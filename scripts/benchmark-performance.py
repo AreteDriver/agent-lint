@@ -67,16 +67,16 @@ def benchmark(steps: int, runs: int = 3) -> dict:
 
         median_latency = sorted(latencies)[runs // 2]
 
-        # Peak RSS via /proc/self/status (Linux only)
+        # Peak RSS via resource module (Unix/macOS/Linux)
         peak_rss_mb = 0.0
         try:
-            with open("/proc/self/status") as fh:
-                for line in fh:
-                    if line.startswith("VmHWM:"):
-                        peak_rss_kb = int(line.split()[1])
-                        peak_rss_mb = peak_rss_kb / 1024
-                        break
-        except FileNotFoundError:
+            import resource
+            usage = resource.getrusage(resource.RUSAGE_SELF)
+            if sys.platform == "darwin":
+                peak_rss_mb = usage.ru_maxrss / (1024 * 1024)
+            else:
+                peak_rss_mb = usage.ru_maxrss / 1024
+        except ImportError:
             pass
 
         return {
