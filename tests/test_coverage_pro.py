@@ -144,7 +144,7 @@ class TestLintMarkdownEmpty:
 
 
 class TestStatusWithLicense:
-    @patch("agent_lint.licensing.get_license_info")
+    @patch("agent_lint.cli.status.get_license_info")
     def test_status_shows_masked_key(self, mock_info: MagicMock) -> None:
         from agent_lint.licensing import LicenseInfo, Tier
 
@@ -158,7 +158,7 @@ class TestStatusWithLicense:
         assert "ALNT-ABCD" in result.output
         assert "****" in result.output
 
-    @patch("agent_lint.licensing.get_license_info")
+    @patch("agent_lint.cli.status.get_license_info")
     def test_status_shows_invalid(self, mock_info: MagicMock) -> None:
         from agent_lint.licensing import LicenseInfo, Tier
 
@@ -178,20 +178,20 @@ class TestStatusWithLicense:
 
 
 class TestCompareCommand:
-    @patch("agent_lint.cli.has_feature", return_value=True)
+    @patch("agent_lint.cli.compare.has_feature", return_value=True)
     def test_compare_with_pro(self, _feat: MagicMock, gorgon_workflow_path: Path) -> None:
         result = runner.invoke(app, ["compare", str(gorgon_workflow_path)])
         assert result.exit_code == 0
         # Should render table output with provider names
         assert "anthropic" in result.output or "ollama" in result.output
 
-    @patch("agent_lint.cli.has_feature", return_value=True)
+    @patch("agent_lint.cli.compare.has_feature", return_value=True)
     def test_compare_json(self, _feat: MagicMock, gorgon_workflow_path: Path) -> None:
         result = runner.invoke(app, ["compare", str(gorgon_workflow_path), "--json"])
         assert result.exit_code == 0
         assert "cheapest" in result.output
 
-    @patch("agent_lint.cli.has_feature", return_value=True)
+    @patch("agent_lint.cli.compare.has_feature", return_value=True)
     def test_compare_missing_file(self, _feat: MagicMock) -> None:
         result = runner.invoke(app, ["compare", "/nonexistent/workflow.yaml"])
         assert result.exit_code == 1

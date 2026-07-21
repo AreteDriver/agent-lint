@@ -22,26 +22,8 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install requests
+        run: pip install pyyaml
 
-      - name: Fetch latest pricing
-        id: fetch
-        run: |
-          python scripts/fetch-pricing.py
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: chore/update-pricing
-          title: "chore: update pricing data"
-          body: |
-            Automated pricing data refresh.
-
-            - Triggered by: ${{ github.event_name }}
-            - Run: ${{ github.run_id }}
-          commit-message: "chore: update pricing data"
-          delete-branch: true
+      - name: Validate pricing YAML
+        id: validate
+        run: python scripts/fetch-pricing.py

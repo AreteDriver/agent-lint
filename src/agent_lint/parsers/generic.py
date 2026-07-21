@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from agent_lint.models import ParsedStep, ParsedWorkflow, StepType, WorkflowFormat
+from agent_lint.parsers import parser_for
 
 
 def _guess_step_type(config: dict[str, Any]) -> StepType:
@@ -36,6 +37,7 @@ def _parse_generic_step(step_id: str, config: dict[str, Any]) -> ParsedStep:
     )
 
 
+@parser_for(WorkflowFormat.GENERIC)
 def parse_generic(raw: dict[str, Any], *, source_path: str | None = None) -> ParsedWorkflow:
     """Parse a generic workflow YAML into a ParsedWorkflow."""
     name = str(raw.get("name", raw.get("workflow", "unnamed")))
