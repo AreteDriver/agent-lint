@@ -40,6 +40,9 @@ agent-lint estimate workflow.yaml --provider anthropic
 
 # Generate a full audit report
 agent-lint lint workflows/ --format markdown
+
+# Suggest autofixes as a diff patch
+agent-lint lint workflow.yaml --fix
 ```
 
 ---
@@ -78,6 +81,29 @@ Treat your agent configs like production code. Gate them the same way.
 
 ---
 
+## Licensing & Tiers
+
+`agent-lint` is available in two tiers:
+
+**Free** — Always free, no license key required:
+- `lint` — anti-pattern detection
+- `estimate` — token/cost estimation
+- `status` — show version and tier info
+
+**Pro** — Unlock additional features with a license key:
+- `compare` — compare costs across providers side-by-side
+- Markdown export for audit reports
+- Custom pricing tables
+- Custom rule packs
+- Historical tracking and trend analysis
+
+Activate Pro with an environment variable:
+```bash
+export AGENT_LINT_LICENSE=ALNT-XXXX-XXXX-XXXX
+```
+
+---
+
 ## Why Static Analysis
 
 No LLM dependency. No API calls. No variance between runs.
@@ -91,9 +117,12 @@ Agent configs are deterministic artifacts — they should be audited determinist
 - [x] Cost estimation (Claude, GPT-4)
 - [x] CI integration with threshold gating
 - [x] Markdown audit reports
+- [x] SARIF output for GitHub Advanced Security
+- [x] GitHub PR annotation format
+- [x] Autofix diff generation (`--fix`)
+- [x] Docker images (multi-arch)
 - [ ] Gemini pricing model
 - [ ] VS Code extension
-- [ ] Auto-fix suggestions
 
 ---
 

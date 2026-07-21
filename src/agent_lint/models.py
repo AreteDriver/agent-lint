@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from enum import StrEnum
-from typing import Any, Literal
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -51,6 +51,14 @@ class RuleCategory(StrEnum):
     RESILIENCE = "resilience"
     EFFICIENCY = "efficiency"
     SECURITY = "security"
+
+
+class TokenSource(StrEnum):
+    """Source of a token estimate."""
+
+    DECLARED = "declared"
+    ARCHETYPE = "archetype"
+    DEFAULT = "default"
 
 
 # ---------------------------------------------------------------------------
@@ -110,7 +118,7 @@ class StepEstimate(BaseModel):
     input_tokens: int
     output_tokens: int
     cost_usd: float
-    source: Literal["declared", "archetype", "default"]
+    source: TokenSource
 
 
 class WorkflowEstimate(BaseModel):

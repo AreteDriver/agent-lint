@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from agent_lint.models import ParsedStep, ParsedWorkflow, StepType, WorkflowFormat
+from agent_lint.parsers import parser_for
 
 
 def _node_to_step(node: dict[str, Any], index: int) -> ParsedStep:
@@ -33,6 +34,7 @@ def _node_to_step(node: dict[str, Any], index: int) -> ParsedStep:
     )
 
 
+@parser_for(WorkflowFormat.LANGCHAIN)
 def parse_langchain(raw: dict[str, Any], *, source_path: str | None = None) -> ParsedWorkflow:
     """Parse a LangChain/LangGraph workflow dict into a ParsedWorkflow."""
     name = str(raw.get("name", raw.get("graph", "unnamed-graph")))

@@ -1,8 +1,14 @@
-"""Workflow format detection and parsing dispatch."""
+"""Workflow format detection and parsing dispatch.
+
+Parser modules self-register via the @parser_for decorator. To add a new
+workflow format, create a parser module and decorate its entry function
+with @parser_for(WorkflowFormat.YOUR_FORMAT).
+"""
 
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -27,6 +33,20 @@ _GORGON_STEP_TYPES = {
     "loop",
     "mcp_tool",
 }
+
+_PARSER_REGISTRY: dict[WorkflowFormat, Callable[..., ParsedWorkflow]] = {}
+
+
+def parser_for(
+    fmt: WorkflowFormat,
+) -> Callable[[Callable[..., ParsedWorkflow]], Callable[..., ParsedWorkflow]]:
+    """Decorator to register a parser function for a workflow format."""
+
+    def decorator(func: Callable[..., ParsedWorkflow]) -> Callable[..., ParsedWorkflow]:
+        _PARSER_REGISTRY[fmt] = func
+        return func
+
+    return decorator
 
 
 def detect_format(raw: dict[str, Any]) -> WorkflowFormat:
@@ -76,22 +96,14 @@ def parse_workflow(path: Path) -> ParsedWorkflow:
     """Load a workflow YAML and parse it into a normalized model."""
     raw = load_yaml(path)
     fmt = detect_format(raw)
+    parser = _PARSER_REGISTRY.get(fmt)
+    if parser is None:
+        parser = _PARSER_REGISTRY[WorkflowFormat.GENERIC]
+    return parser(raw, source_path=str(path))
 
-    if fmt == WorkflowFormat.GORGON:
-        from agent_lint.parsers.gorgon import parse_gorgon
 
-        return parse_gorgon(raw, source_path=str(path))
-
-    if fmt == WorkflowFormat.CREWAI:
-        from agent_lint.parsers.crewai import parse_crewai
-
-        return parse_crewai(raw, source_path=str(path))
-
-    if fmt == WorkflowFormat.LANGCHAIN:
-        from agent_lint.parsers.langchain import parse_langchain
-
-        return parse_langchain(raw, source_path=str(path))
-
-    from agent_lint.parsers.generic import parse_generic
-
-    return parse_generic(raw, source_path=str(path))
+# Eagerly import parser modules so their @parser_for decorators self-register.
+from agent_lint.parsers import crewai as crewai  # noqa: E402, F401
+from agent_lint.parsers import generic as generic  # noqa: E402, F401
+from agent_lint.parsers import gorgon as gorgon  # noqa: E402, F401
+from agent_lint.parsers import langchain as langchain  # noqa: E402, F401

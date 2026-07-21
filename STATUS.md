@@ -3,10 +3,12 @@
 | Attribute | Value |
 |-----------|-------|
 | Status | **OPERATIONAL** |
-| Last verified | 2026-07-16 |
+| Last verified | 2026-07-19 |
 | Installable? | Yes — `pip install agentlinter` |
 | Tested? | CI green; see badge below |
-| Documented? | README + inline help; no hosted docs |
+| Documented? | README + MkDocs site + inline help |
+| Hosted docs | [aretedriver.github.io/agent-lint](https://aretedriver.github.io/agent-lint/) |
+| Docker image | `ghcr.io/aretedriver/agent-lint:latest` |
 | CI | [![CI](https://github.com/AreteDriver/agent-lint/actions/workflows/ci.yml/badge.svg)](https://github.com/AreteDriver/agent-lint/actions/workflows/ci.yml) |
 
 ## What Works
@@ -15,13 +17,16 @@
 - **Linting:** Detects unbounded loops, missing cost guards, parallel branches without coordination, fragile retry patterns
 - **Cost Estimation:** Token/cost exposure estimates per workflow, per provider
 - **CI Integration:** `--fail-under` flag for gated deployments
-- **Output Formats:** Terminal tables, JSON, Markdown audit reports
+- **Output Formats:** Terminal tables, JSON, Markdown audit reports, SARIF, GitHub PR annotations
+- **Autofix:** `--fix` generates diff patches for fixable findings
+- **Hosted Docs:** MkDocs site deployed via GitHub Actions
+- **Docker:** Multi-arch images (`linux/amd64`, `linux/arm64`) on GHCR
 
 ## What Doesn't Work Yet
 
 - Dashboard for historical lint trends (not planned)
 - Integration with Animus Forge as a native quality gate (roadmap)
-- No hosted documentation
+- VS Code extension
 
 ## Install
 
