@@ -126,4 +126,10 @@ Agent configs are deterministic artifacts — they should be audited determinist
 
 ---
 
+## Related Projects
+
+- **[mcp-manager](https://github.com/AreteDriver/mcp-manager)** — MCP server manager with built-in audit (`pip install arete-mcp`)
+- **[ai-spend](https://github.com/AreteDriver/ai-spend)** — Cost observability for the workflows agent-lint guards (`pip install ai-spend`)
+- **[animus](https://github.com/AreteDriver/animus)** — The AI operating environment with built-in quality gates and eval pipeline
+
 *Part of the [AreteDriver](https://github.com/AreteDriver) AI tooling ecosystem.*
