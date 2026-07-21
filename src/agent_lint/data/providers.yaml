@@ -1,5 +1,13 @@
 # Provider pricing database for agent-lint.
-# Prices in USD per 1K tokens. Updated 2025-Q4.
+# Prices in USD per 1K tokens.
+#
+# NOTE: OpenAI and Anthropic do not expose pricing via public API.
+# This file is updated manually. When prices change, edit this file
+# and bump the last_updated timestamp below.
+
+meta:
+  last_updated: "2026-07-19"
+  source: "manual compilation — APIs do not expose pricing"
 
 providers:
   anthropic:

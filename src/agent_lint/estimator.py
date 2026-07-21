@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Literal
-
 from agent_lint.config import (
     INPUT_OUTPUT_RATIO,
     ROLE_TOKEN_DEFAULTS,
@@ -14,26 +12,27 @@ from agent_lint.models import (
     ParsedWorkflow,
     StepEstimate,
     StepType,
+    TokenSource,
     WorkflowEstimate,
 )
 from agent_lint.pricing import calculate_cost, get_model_pricing, load_providers
 
 
-def _resolve_tokens(step: ParsedStep) -> tuple[int, Literal["declared", "archetype", "default"]]:
+def _resolve_tokens(step: ParsedStep) -> tuple[int, TokenSource]:
     """Resolve token estimate for a step. Returns (tokens, source)."""
     # 1. Declared in YAML.
     if step.estimated_tokens is not None:
-        return step.estimated_tokens, "declared"
+        return step.estimated_tokens, TokenSource.DECLARED
 
     # 2. Archetype default by role.
     if step.role and step.role in ROLE_TOKEN_DEFAULTS:
-        return ROLE_TOKEN_DEFAULTS[step.role], "archetype"
+        return ROLE_TOKEN_DEFAULTS[step.role], TokenSource.ARCHETYPE
 
     # 3. Step type default.
     default = STEP_TYPE_TOKEN_DEFAULTS.get(step.step_type.value, 0)
     if step.step_type == StepType.LLM and default == 0:
         default = STEP_TYPE_TOKEN_DEFAULTS.get("llm", 8000)
-    return default, "default"
+    return default, TokenSource.DEFAULT
 
 
 def _split_tokens(total: int) -> tuple[int, int]:
@@ -56,7 +55,9 @@ def estimate_step(
         nested_total = sum(_resolve_tokens(ns)[0] for ns in step.nested_steps)
         if nested_total > total_tokens:
             total_tokens = nested_total
-            source = "declared" if step.estimated_tokens is not None else "archetype"
+            source = (
+                TokenSource.DECLARED if step.estimated_tokens is not None else TokenSource.ARCHETYPE
+            )
 
     input_tokens, output_tokens = _split_tokens(total_tokens)
 

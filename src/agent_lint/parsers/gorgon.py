@@ -6,6 +6,7 @@ from typing import Any
 
 from agent_lint.config import LLM_STEP_TYPES, STEP_TYPE_PROVIDER_MAP
 from agent_lint.models import ParsedStep, ParsedWorkflow, StepType, WorkflowFormat
+from agent_lint.parsers import parser_for
 
 # Map Gorgon step type strings to normalized StepType.
 _TYPE_MAP: dict[str, StepType] = {
@@ -77,6 +78,7 @@ def _parse_step(raw: dict[str, Any]) -> ParsedStep:
     )
 
 
+@parser_for(WorkflowFormat.GORGON)
 def parse_gorgon(raw: dict[str, Any], *, source_path: str | None = None) -> ParsedWorkflow:
     """Parse a Gorgon/Forge workflow dict into a ParsedWorkflow."""
     name = str(raw.get("name", "unnamed"))
