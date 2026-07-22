@@ -5,7 +5,7 @@ Catch expensive, fragile, or ungoverned agent workflows before they hit producti
 
 [![PyPI](https://img.shields.io/pypi/v/agentlinter.svg)](https://pypi.org/project/agentlinter/)
 [![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://python.org)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: BSL-1.1](https://img.shields.io/badge/License-BSL--1.1-blue.svg)](LICENSE)
 [![CI](https://github.com/AreteDriver/agent-lint/actions/workflows/ci.yml/badge.svg)](https://github.com/AreteDriver/agent-lint/actions)
 
 ---
