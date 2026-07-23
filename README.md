@@ -16,6 +16,8 @@ Agent workflows fail in predictable ways: unbounded loops, no retry limits, miss
 
 `agent-lint` finds them at config time.
 
+![agent-lint demo](docs/assets/agent-lint-demo.gif)
+
 ---
 
 ## Install
