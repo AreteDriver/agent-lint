@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agentlinter"
-version = "0.3.3"
+version = "0.3.4"
 description = "Estimate costs and lint agent workflow YAML files"
 readme = "README.md"
 license = {text = "Business Source License 1.1"}
