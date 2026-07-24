@@ -46,4 +46,4 @@ agent-lint lint workflows/ --fail-under 80
 
 ## License
 
-MIT — see [LICENSE](https://github.com/AreteDriver/agent-lint/blob/main/LICENSE).
+Business Source License 1.1 — see [LICENSE](https://github.com/AreteDriver/agent-lint/blob/main/LICENSE).

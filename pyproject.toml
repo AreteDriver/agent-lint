@@ -7,7 +7,7 @@ name = "agentlinter"
 version = "0.3.3"
 description = "Estimate costs and lint agent workflow YAML files"
 readme = "README.md"
-license = {text = "MIT"}
+license = {text = "Business Source License 1.1"}
 requires-python = ">=3.11"
 authors = [{name = "AreteDriver"}]
 keywords = ["ai", "agents", "workflow", "cost", "linter", "claude", "openai", "ollama"]
@@ -15,7 +15,6 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
