@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.4] - 2026-07-24
+
+### Fixed
+
+- **Corrected license metadata misdeclaration.** `pyproject.toml` and documentation falsely declared MIT since v0.1.1 despite the LICENSE file always being Business Source License 1.1. This created a real legal liability: downstream consumers and automated license scanners received incorrect terms. The invalid `License :: OSI Approved :: MIT License` Trove classifier has been removed. BSL-1.1 is not OSI-approved; no replacement classifier exists at this time. Corrected in PR #42; released as v0.3.4 to fix the PyPI public artifact record (#42).
+- Corrected historical CHANGELOG entry for v0.3.0 which incorrectly claimed the license was "aligned to MIT" — it was in fact misaligned, creating the defect fixed above.
+
 ## [0.3.0] - 2026-07-20
 
 ### Added
@@ -39,7 +46,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **CONTRIBUTING.md**, issue templates, and pull request template (#19)
 
 ### Fixed
-- License metadata in `pyproject.toml` aligned to MIT (#11)
+- ~~License metadata in `pyproject.toml` aligned to MIT (#11)~~  
+  **Correction (2026-07-24):** This entry was incorrect. The metadata was misaligned — `pyproject.toml` falsely declared MIT while the LICENSE file was BSL-1.1. The defect was introduced in v0.1.1 and corrected in v0.3.4 (see #42).
 - Asymmetric rule imports in `linter.py` replaced with uniform top-level imports (#14)
 - Rich `console.print()` soft-wrap corruption of SARIF JSON replaced with plain `print()` (#16)
 - Config file kebab-case normalization ordering bug with env overrides (#17)
