@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.5] - 2026-08-17
+
+### Added
+
+- **Current OpenAI GPT-5.6 pricing** for `gpt-5.6` (Sol alias), `gpt-5.6-sol`, `gpt-5.6-terra`, and `gpt-5.6-luna`, using standard API input/output rates published by OpenAI on 2026-08-17.
+
+### Changed
+
+- The default OpenAI estimate now uses the current `gpt-5.6` alias instead of legacy `gpt-4o`.
+
+### Fixed
+
+- Runtime version reporting now reads installed package metadata, eliminating drift between `pyproject.toml` and `agent_lint.__version__`.
+
 ## [0.3.4] - 2026-07-24
 
 ### Fixed

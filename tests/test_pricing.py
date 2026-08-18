@@ -38,8 +38,8 @@ class TestLoadProviders:
     def test_openai_has_models(self) -> None:
         providers = load_providers()
         openai = providers["openai"]
-        assert "gpt-4o" in openai.models
-        assert openai.default_model == "gpt-4o"
+        assert {"gpt-5.6", "gpt-5.6-sol", "gpt-5.6-terra", "gpt-5.6-luna"} <= set(openai.models)
+        assert openai.default_model == "gpt-5.6"
 
     def test_ollama_is_free(self) -> None:
         providers = load_providers()
@@ -59,6 +59,27 @@ class TestGetModelPricing:
         pricing = get_model_pricing("anthropic", "claude-opus-4")
         assert pricing.name == "claude-opus-4"
         assert pricing.input_price_per_1k == 0.015
+
+    @pytest.mark.parametrize(
+        ("model", "input_price", "output_price"),
+        [
+            ("gpt-5.6", 0.005, 0.03),
+            ("gpt-5.6-sol", 0.005, 0.03),
+            ("gpt-5.6-terra", 0.002, 0.012),
+            ("gpt-5.6-luna", 0.0002, 0.0012),
+        ],
+    )
+    def test_gpt_5_6_family(self, model: str, input_price: float, output_price: float) -> None:
+        pricing = get_model_pricing("openai", model)
+        assert pricing.input_price_per_1k == input_price
+        assert pricing.output_price_per_1k == output_price
+        assert pricing.context_window == 1_050_000
+
+    def test_gpt_5_6_alias_matches_sol(self) -> None:
+        alias = get_model_pricing("openai", "gpt-5.6")
+        sol = get_model_pricing("openai", "gpt-5.6-sol")
+        assert alias.input_price_per_1k == sol.input_price_per_1k
+        assert alias.output_price_per_1k == sol.output_price_per_1k
 
     def test_unknown_provider(self) -> None:
         with pytest.raises(PricingError, match="Unknown provider"):

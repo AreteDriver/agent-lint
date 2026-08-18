@@ -22,6 +22,12 @@ jobs:
       - name: Install build tools
         run: pip install build
 
+      - name: Verify tag matches package version
+        run: |
+          package_version="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')"
+          tag_version="${GITHUB_REF_NAME#v}"
+          test "$package_version" = "$tag_version"
+
       - name: Build wheel and sdist
         run: python -m build
 

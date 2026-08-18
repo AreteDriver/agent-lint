@@ -6,8 +6,8 @@
 # and bump the last_updated timestamp below.
 
 meta:
-  last_updated: "2026-07-19"
-  source: "manual compilation — APIs do not expose pricing"
+  last_updated: "2026-08-17"
+  source: "official provider pricing pages; manually maintained"
 
 providers:
   anthropic:
@@ -27,8 +27,27 @@ providers:
         context: 200000
 
   openai:
-    default_model: gpt-4o
+    default_model: gpt-5.6
     models:
+      # Standard API rates. Cached-input discounts, cache-write premiums,
+      # Batch/Flex rates, and long-context surcharges are not modeled yet.
+      gpt-5.6:
+        input: 0.005
+        output: 0.03
+        context: 1050000
+        notes: "Alias for gpt-5.6-sol"
+      gpt-5.6-sol:
+        input: 0.005
+        output: 0.03
+        context: 1050000
+      gpt-5.6-terra:
+        input: 0.002
+        output: 0.012
+        context: 1050000
+      gpt-5.6-luna:
+        input: 0.0002
+        output: 0.0012
+        context: 1050000
       gpt-4o:
         input: 0.0025
         output: 0.01
