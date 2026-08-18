@@ -62,7 +62,7 @@ agent-lint lint workflow.yaml --fix
 **Cost estimation:**
 - Token budget projection per workflow step
 - Worst-case / expected-case / best-case cost ranges
-- Model-aware pricing (Claude, GPT-4, Gemini)
+- Model-aware pricing (Claude, GPT-5.6, and self-hosted Ollama models)
 
 **Scoring:**
 - 0-100 score per workflow
@@ -116,7 +116,7 @@ Agent configs are deterministic artifacts — they should be audited determinist
 ## Status
 
 - [x] Anti-pattern detection (17 rules)
-- [x] Cost estimation (Claude, GPT-4)
+- [x] Cost estimation (Claude, GPT-5.6, legacy OpenAI, and Ollama)
 - [x] CI integration with threshold gating
 - [x] Markdown audit reports
 - [x] SARIF output for GitHub Advanced Security

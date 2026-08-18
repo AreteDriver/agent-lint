@@ -12,7 +12,7 @@ venv/
 .ruff_cache/
 .pytest_cache/
 *.so
-.coverage
+.coverage*
 htmlcov/
 .env
 *.log

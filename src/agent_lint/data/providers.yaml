@@ -6,8 +6,9 @@
 # and bump the last_updated timestamp below.
 
 meta:
-  last_updated: "2026-08-17"
+  last_updated: "2026-08-18"
   source: "official provider pricing pages; manually maintained"
+  openai_source: "https://developers.openai.com/api/docs/pricing"
 
 providers:
   anthropic:

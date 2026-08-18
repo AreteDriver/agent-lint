@@ -36,7 +36,7 @@ agent-lint lint workflows/ --fail-under 80
 | Feature | Status |
 |---------|--------|
 | Anti-pattern detection (17 rules) | ✅ |
-| Cost estimation (Claude, GPT-4, Gemini) | ✅ |
+| Cost estimation (Claude, GPT-5.6, legacy OpenAI, Ollama) | ✅ |
 | CI integration with threshold gating | ✅ |
 | Markdown audit reports | ✅ |
 | SARIF output for GitHub Advanced Security | ✅ |
