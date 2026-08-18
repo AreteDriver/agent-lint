@@ -14,7 +14,7 @@ Output is a table by default. Use `--format json` or `--format markdown` for mac
 agent-lint estimate workflow.yaml --provider anthropic
 ```
 
-Supported providers: `openai`, `anthropic`, `google`, `ollama`.
+Supported providers: `openai`, `anthropic`, and `ollama`.
 
 ## Compare Two Workflows
 

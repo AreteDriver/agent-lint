@@ -3,7 +3,7 @@
 | Attribute | Value |
 |-----------|-------|
 | Status | **OPERATIONAL** |
-| Last verified | 2026-07-19 |
+| Last verified | 2026-08-18 |
 | Installable? | Yes — `pip install agentlinter` |
 | Tested? | CI green; see badge below |
 | Documented? | README + MkDocs site + inline help |
@@ -15,7 +15,8 @@
 
 - **PyPI Package:** Published as `agentlinter`
 - **Linting:** Detects unbounded loops, missing cost guards, parallel branches without coordination, fragile retry patterns
-- **Cost Estimation:** Token/cost exposure estimates per workflow, per provider
+- **Cost Estimation:** Token/cost exposure estimates for Anthropic, OpenAI GPT-5.6
+  and legacy models, plus self-hosted Ollama models
 - **CI Integration:** `--fail-under` flag for gated deployments
 - **Output Formats:** Terminal tables, JSON, Markdown audit reports, SARIF, GitHub PR annotations
 - **Autofix:** `--fix` generates diff patches for fixable findings

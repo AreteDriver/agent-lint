@@ -132,6 +132,25 @@ class TestEstimateWorkflow:
         )
         est = estimate_workflow(wf)
         assert est.provider == "openai"
+        assert est.model == "gpt-5.6"
+
+    def test_prices_declared_gpt_5_6_model(self) -> None:
+        wf = ParsedWorkflow(
+            name="current-openai-model",
+            format=WorkflowFormat.GENERIC,
+            steps=[
+                ParsedStep(
+                    id="s1",
+                    step_type=StepType.LLM,
+                    provider="openai",
+                    model="gpt-5.6-terra",
+                    estimated_tokens=10_000,
+                ),
+            ],
+        )
+        est = estimate_workflow(wf)
+        assert est.steps[0].model == "gpt-5.6-terra"
+        assert est.steps[0].cost_usd == 0.09
 
     def test_explicit_provider_override(self) -> None:
         wf = ParsedWorkflow(
