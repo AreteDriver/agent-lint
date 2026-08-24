@@ -14,6 +14,7 @@ venv/
 *.so
 .coverage*
 htmlcov/
+site/
 .env
 *.log
 

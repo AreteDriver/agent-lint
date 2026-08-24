@@ -1,0 +1,36 @@
+name: Action Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  action-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Accept a clean workflow directory
+        uses: ./
+        with:
+          path: tests/fixtures/benchmarks
+          fail-under: "80"
+          format: github
+
+      - name: Reject a risky workflow at a strict threshold
+        id: expected-failure
+        continue-on-error: true
+        uses: ./
+        with:
+          path: tests/fixtures/action/risky.yaml
+          fail-under: "100"
+          format: github
+
+      - name: Verify the quality gate failed closed
+        if: steps.expected-failure.outcome != 'failure'
+        run: exit 1

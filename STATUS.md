@@ -7,7 +7,7 @@
 | Installable? | Yes — `pip install agentlinter` |
 | Tested? | CI green; see badge below |
 | Documented? | README + MkDocs site + inline help |
-| Hosted docs | [aretedriver.github.io/agent-lint](https://aretedriver.github.io/agent-lint/) |
+| Hosted docs | Build is verified; GitHub Pages must be enabled before public deployment |
 | Docker image | `ghcr.io/aretedriver/agent-lint:latest` |
 | CI | [![CI](https://github.com/AreteDriver/agent-lint/actions/workflows/ci.yml/badge.svg)](https://github.com/AreteDriver/agent-lint/actions/workflows/ci.yml) |
 
@@ -20,7 +20,7 @@
 - **CI Integration:** `--fail-under` flag for gated deployments
 - **Output Formats:** Terminal tables, JSON, Markdown audit reports, SARIF, GitHub PR annotations
 - **Autofix:** `--fix` generates diff patches for fixable findings
-- **Hosted Docs:** MkDocs site deployed via GitHub Actions
+- **Docs:** MkDocs site builds in GitHub Actions; public Pages deployment awaits repository setup
 - **Docker:** Multi-arch images (`linux/amd64`, `linux/arm64`) on GHCR
 
 ## What Doesn't Work Yet

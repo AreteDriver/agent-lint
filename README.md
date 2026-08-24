@@ -74,9 +74,11 @@ agent-lint lint workflow.yaml --fix
 ## CI Integration
 
 ```yaml
-# .github/workflows/agent-lint.yml
-- name: Lint agent workflows
-  run: agent-lint lint workflows/ --fail-under 80
+- uses: actions/checkout@v4
+- uses: AreteDriver/agent-lint@v0.4.0
+  with:
+    path: workflows/
+    fail-under: 80
 ```
 
 Treat your agent configs like production code. Gate them the same way.
