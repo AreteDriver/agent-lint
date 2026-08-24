@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-08-24
+
+### Added
+
+- Root-level GitHub Action metadata for direct `AreteDriver/agent-lint@v0.4.0` usage and
+  GitHub Marketplace eligibility.
+- End-to-end Action contract tests for passing and fail-closed quality gates.
+- Recursive directory linting with stable file ordering and valid multi-report JSON/SARIF output.
+
+### Fixed
+
+- Registered built-in lint rules during normal package import; previously a clean CLI process
+  could execute with an empty rule registry and incorrectly report 100/100.
+- Kept JSON and SARIF stdout valid when a score threshold fails by writing the diagnostic to stderr.
+- Wired the documented `github` and `sarif` CLI formats into the `lint` command.
+- Installed the Action from its checked-out release source so Action behavior matches its tag.
+- Passed Action inputs through environment variables to avoid shell expression injection.
+
 ## [0.3.5] - 2026-08-18
 
 ### Added

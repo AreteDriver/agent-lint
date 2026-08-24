@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: AreteDriver/agent-lint/.github/actions/agent-lint@main
+      - uses: AreteDriver/agent-lint@v0.4.0
         with:
           path: workflows/
           fail-under: 80
@@ -55,7 +55,7 @@ Add to your `.pre-commit-config.yaml`:
 ```yaml
 repos:
   - repo: https://github.com/AreteDriver/agent-lint
-    rev: v0.2.1
+    rev: v0.4.0
     hooks:
       - id: agent-lint
         args: [--fail-under, "80"]

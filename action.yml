@@ -1,0 +1,60 @@
+name: agent-lint
+description: Lint agent workflow YAML for cost, security, reliability, and governance risks
+author: AreteDriver
+
+branding:
+  icon: shield
+  color: blue
+
+inputs:
+  path:
+    description: Workflow YAML file or directory to lint recursively
+    required: false
+    default: workflows
+  fail-under:
+    description: Minimum score required for every workflow (0-100)
+    required: false
+    default: "80"
+  format:
+    description: Output format (table, json, markdown, github, or sarif)
+    required: false
+    default: github
+  category:
+    description: Optional category filter (budget, resilience, efficiency, or security)
+    required: false
+    default: ""
+  severity:
+    description: Optional severity filter (error, warning, or info)
+    required: false
+    default: ""
+  python-version:
+    description: Python version used to run agent-lint
+    required: false
+    default: "3.12"
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.0.0
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install agent-lint from this release
+      shell: bash
+      run: python -m pip install --disable-pip-version-check "$GITHUB_ACTION_PATH"
+
+    - name: Lint agent workflows
+      shell: bash
+      env:
+        AGENT_LINT_PATH: ${{ inputs.path }}
+        AGENT_LINT_FAIL_UNDER: ${{ inputs.fail-under }}
+        AGENT_LINT_FORMAT: ${{ inputs.format }}
+        AGENT_LINT_CATEGORY: ${{ inputs.category }}
+        AGENT_LINT_SEVERITY: ${{ inputs.severity }}
+      run: |
+        args=("$AGENT_LINT_PATH" --format "$AGENT_LINT_FORMAT")
+        [[ -n "$AGENT_LINT_FAIL_UNDER" ]] && args+=(--fail-under "$AGENT_LINT_FAIL_UNDER")
+        [[ -n "$AGENT_LINT_CATEGORY" ]] && args+=(--category "$AGENT_LINT_CATEGORY")
+        [[ -n "$AGENT_LINT_SEVERITY" ]] && args+=(--severity "$AGENT_LINT_SEVERITY")
+        agent-lint lint "${args[@]}"

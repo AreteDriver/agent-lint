@@ -56,3 +56,11 @@ def get_all_rules() -> list[RuleEntry]:
 def get_rules_by_category(category: RuleCategory) -> list[RuleEntry]:
     """Return rules filtered by category."""
     return [r for r in _RULE_REGISTRY if r.category == category]
+
+
+# Import built-in rule modules after the registry API is defined so a normal CLI process
+# registers the same rules as the test suite. New built-in rule modules belong in this list.
+from agent_lint.rules import budget as budget  # noqa: E402, F401
+from agent_lint.rules import efficiency as efficiency  # noqa: E402, F401
+from agent_lint.rules import resilience as resilience  # noqa: E402, F401
+from agent_lint.rules import security as security  # noqa: E402, F401

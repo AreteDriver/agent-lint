@@ -1,0 +1,6 @@
+name: risky-agent-loop
+steps:
+  - id: autonomous-run
+    type: llm
+    provider: openai
+    model: gpt-5.6
