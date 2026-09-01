@@ -10,6 +10,24 @@ Catch expensive, fragile, or ungoverned agent workflows before they hit producti
 
 ---
 
+## What this demonstrates
+
+- Translating AI workflow governance into executable, reviewable checks.
+- Static analysis for cost exposure, retry behavior, schemas, secrets, and fragile coordination.
+- CLI, CI, SARIF, documentation, packaging, and security practices for a focused developer tool.
+
+## Current status and limitations
+
+This is an active independent static analyzer. Findings are heuristics and review aids, not proof that a workflow is safe, compliant, or inexpensive at runtime. Model prices and supported workflow formats can change. See [Project Status](STATUS.md), [Security](SECURITY.md), and [Changelog](CHANGELOG.md).
+
+## Development
+
+```bash
+pip install -e ".[dev]"
+pytest
+ruff check .
+```
+
 ## The Problem
 
 Agent workflows fail in predictable ways: unbounded loops, no retry limits, missing cost guards, parallel branches with no coordination. Most teams find these problems in production — after a $400 API bill or a stuck workflow that ran for six hours.
